@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Discrete Mathematics</title>
+    <style>
+        body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 30px;
+}
+
+h2 {
+  margin-top: 50px;
+}
+
+p {
+  margin: 10px 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+  align-items: center;
+}
+
+label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+input[type="text"],
+input[type="number"],
+button[type="submit"] {
+  padding: 8px 12px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 200px;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #0069d9;
+}
+
+#set-result,
+#perm-result,
+#comb-result {
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#set-result p,
+#perm-result p,
+#comb-result p {
+  margin: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <h1>PyPCS</h1>
+    <p>This is a simple website to demonstrate sets, permutations, and combinations.</p>
+    <h2>1. Sets</h2>
+    <form id="set-form">
+        <label for="set-a">Set A:</label>
+        <input type="text" id="set-a" name="set-a">
+        <label for="set-b">Set B:</label>
+        <input type="text" id="set-b" name="set-b">
+        <button type="submit">Submit</button>
+    </form>
+    <div id="set-result"></div>
+    <h2>2. Permutation and Combination</h2>
+    <form id="perm-comb-form">
+        <label for="n">n:</label>
+        <input type="number" id="n" name="n">
+        <label for="r">r:</label>
+        <input type="number" id="r" name="r">
+        <button type="submit">Submit</button>
+    </form>
+    <div id="perm-result"></div>
+    <div id="comb-result"></div>
+    <script>
+        // Function to process set input
+        function processSetInput(event) {
+            event.preventDefault();
+            let setAInput = document.getElementById("set-a").value;
+            let setBInput = document.getElementById("set-b").value;
+            let setA = new Set(setAInput.split(',').map(item => item.trim()));
+            let setB = new Set(setBInput.split(',').map(item => item.trim()));
+            let intersection = new Set([...setA].filter(x => setB.has(x)));
+            let union = new Set([...setA, ...setB]);
+            let differenceA = new Set([...setA].filter(x => !setB.has(x)));
+            let differenceB = new Set([...setB].filter(x => !setA.has(x)));
+            let subset = isSubset(setA, union);
+            let superset = isSuperset(setA, setB);
+
+            // Display the results
+            let resultElement = document.getElementById("set-result");
+            resultElement.innerHTML = `
+                <p>Set A: ${[...setA]}</p>
+                <p>Set B: ${[...setB]}</p>
+                <p>Intersection: ${[...intersection]}</p>
+                <p>Union: ${[...union]}</p>
+                <p>Set difference A-B: ${[...differenceA]}</p>
+                <p>Set difference B-A: ${[...differenceB]}</p>
+                <p>Set A is a subset of set A union set B: ${subset}</p>
+                <p>Set A union set B is a superset of set A: ${superset}</p>
+            `;
+        }
+
+        // Function to check if a set is a subset of another set
+        function isSubset(setA, setB) {
+            return [...setA].every(x => setB.has(x));
+        }
+
+        // Function to check if a set is a superset of another set
+        function isSuperset(setA, setB) {
+            return isSubset(setB, setA);
+        }
+
+        // Add event listener to set form
+        let setForm = document.getElementById("set-form");
+        setForm.addEventListener("submit", processSetInput);
+
+            // Function to calculate permutations
+    function calculatePermutations(event) {
+        event.preventDefault();
+        let n = document.getElementById("n").value;
+        let r = document.getElementById("r").value;
+        let permutations = getPermutations(n, r);
+
+        // Display the results
+        let resultElement = document.getElementById("perm-result");
+        resultElement.innerHTML = `
+            <p>Permutations: ${permutations}</p>
+        `;
+    }
+
+    // Function to calculate combinations
+    function calculateCombinations(event) {
+        event.preventDefault();
+        let n = document.getElementById("n").value;
+        let r = document.getElementById("r").value;
+        let combinations = getCombinations(n, r);
+
+        // Display the results
+        let resultElement = document.getElementById("comb-result");
+        resultElement.innerHTML = `
+            <p>Combinations: ${combinations}</p>
+        `;
+    }
+
+    // Function to calculate permutations
+    function getPermutations(n, r) {
+        let result = 1;
+        for (let i = n; i > n - r; i--) {
+            result *= i;
+        }
+        return result;
+    }
+
+    // Function to calculate combinations
+    function getCombinations(n, r) {
+        let numerator = getPermutations(n, r);
+        let denominator = getPermutations(r, r);
+        return numerator / denominator;
+    }
+
+    // Add event listener to permutation and combination form
+    let permCombForm = document.getElementById("perm-comb-form");
+    permCombForm.addEventListener("submit", calculatePermutations);
+    permCombForm.addEventListener("submit", calculateCombinations);
+</script>
